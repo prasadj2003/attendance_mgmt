@@ -179,5 +179,35 @@
     "name": "Ram",
     "rollNumber": 71,
     "status": "Absent"
+  },
+  {
+    "name": "Prasad",
+    "rollNumber": 18,
+    "status": "Absent"
+  },
+  {
+    "name": "Aadit",
+    "rollNumber": 11,
+    "status": "Absent"
+  },
+  {
+    "name": "Aditya",
+    "rollNumber": 14,
+    "status": "Absent"
+  },
+  {
+    "name": "Deva",
+    "rollNumber": 17,
+    "status": "Absent"
+  },
+  {
+    "name": "Pankaj",
+    "rollNumber": 16,
+    "status": "Absent"
+  },
+  {
+    "name": "Deep",
+    "rollNumber": 15,
+    "status": "Absent"
   }
 ]
