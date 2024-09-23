@@ -22,37 +22,14 @@ function handleFile(event) {
     const worksheet = workbook.Sheets[sheetName];
     const jsonSheet = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-    if (jsonSheet.length - 1 > 10) { // Subtract 1 for the header row
+    // Limit the number of students to 10
+    if (jsonSheet.length - 1 > 10) {
       alert('File too large. Maximum 10 students allowed.');
       return;
     }
 
-    for (let i = 1; i < jsonSheet.length; i++) { // Skip the header row
-      if (typeof jsonSheet[i][0] !== 'string') {
-        alert(`Invalid name at row ${i + 1}. Name must be a string.`);
-        return;
-      }
-    }
-
-    // Check for missing or invalid data (empty name or roll number)
-    for (let i = 1; i < jsonSheet.length; i++) { // Skip the header row
-      const [name, rollNumber] = jsonSheet[i];
-
-      if (!name || !rollNumber) {
-        alert(`Missing data at row ${i + 1}. Both name and roll number are required.`);
-        return;
-      }
-
-      if (typeof name !== 'string') {
-        alert(`Invalid name at row ${i + 1}. Name must be a string.`);
-        return;
-      }
-    }
-
-    // Use an object to track unique entries (keyed by name and roll number)
-    const uniqueEntries = {};
-    
     // Process the student data and filter out duplicates
+    const uniqueEntries = {};
     studentData = jsonSheet.slice(1).map(row => ({
       name: row[0],
       rollNumber: row[1],
@@ -60,10 +37,10 @@ function handleFile(event) {
     })).filter(student => {
       const key = `${student.name}-${student.rollNumber}`;
       if (!uniqueEntries[key]) {
-        uniqueEntries[key] = true; // Mark this entry as seen
-        return true; // Include in the final array
+        uniqueEntries[key] = true;
+        return true;
       }
-      return false; // Filter out duplicate
+      return false;
     });
 
     displayStudentData();
@@ -75,8 +52,6 @@ function handleFile(event) {
 // Function to display the student data in the table
 function displayStudentData() {
   const table = document.getElementById('attendance-table');
-
-  // Clear the existing table rows except for the header
   table.innerHTML = `
     <tr>
       <th>Name</th>
@@ -85,7 +60,6 @@ function displayStudentData() {
     </tr>
   `;
 
-  // Loop through the student data and create table rows
   studentData.forEach((student, index) => {
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
@@ -111,12 +85,10 @@ function updateStatus(index, element) {
 function submitAttendance() {
   ipcRenderer.send('submit-attendance', studentData);
   alert('Attendance submitted successfully!');
-
+  
   // Clear the table and reset the studentData array
   studentData = [];
   const table = document.getElementById('attendance-table');
-  
-  // Reset table content to only show the header row
   table.innerHTML = `
     <tr>
       <th>Name</th>
@@ -125,10 +97,8 @@ function submitAttendance() {
     </tr>
   `;
 
-  // Clear the file input field
-  const fileInput = document.getElementById('file-upload');
-  fileInput.value = ''; // This clears the uploaded file
-
+  // Clear the file input
+  document.getElementById('file-upload').value = '';
 }
 
 // Receive confirmation from main process
